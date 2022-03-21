@@ -1,8 +1,5 @@
-import pandas as pd
+from pollos_petrel import read_training_dataset
 
 
-def read_training_dataset() -> pd.DataFrame:
-    return pd.read_csv(f"train.csv{None}")
-
-
-read_training_dataset().describe().to_csv(f"describe_train.csv{None}")
+def describe_data():
+    read_training_dataset().describe().to_csv("describe_train.csv")
