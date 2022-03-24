@@ -3,11 +3,13 @@ from matplotlib import pyplot as plt
 
 
 figure_style = {"figsize": (20, 14)}
-plt.figure(figsize=figure_style["figsize"])  # pragma: no mutate
 
 
-def make_histograms():
+def make_histograms(fs):
     """Crea histogramas de cada columna de nuestros datos train.csv"""
-    data = pd.read_csv("pollos_petrel/train.csv")
-    data.hist()
-    plt.savefig("histogramas.png")
+    data_filename = "pollos_petrel/train.csv"
+    data = pd.read_csv(data_filename)
+    data.hist(**fs)
+    histogram_filename = "histogramas.png"
+    plt.savefig(histogram_filename)
+    plt.close()

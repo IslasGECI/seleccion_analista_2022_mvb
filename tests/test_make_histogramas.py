@@ -12,6 +12,6 @@ def test_make_histograms():
     imagen_path = "histogramas.png"
     if os.path.exists(imagen_path):
         os.remove(imagen_path)
-    make_histograms()
+    make_histograms(figure_style)
     assert os.path.exists(imagen_path)
     os.remove(imagen_path)
