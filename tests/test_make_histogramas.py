@@ -4,8 +4,8 @@ import os
 
 def test_figure_style():
     expected_style = {"figsize": (20, 14)}
-    obtaines_style = figure_style
-    assert obtaines_style == expected_style
+    obtained_style = figure_style
+    assert obtained_style == expected_style
 
 
 def test_make_histograms():
