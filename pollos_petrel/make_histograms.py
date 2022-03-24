@@ -1,7 +1,9 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-plt.figure(figsize=(20, 14))  # pragma: no mutate
+
+figure_style = {"figsize": (20, 14)}
+plt.figure(figsize=figure_style["figsize"])  # pragma: no mutate
 
 
 def make_histograms():
@@ -9,7 +11,3 @@ def make_histograms():
     data = pd.read_csv("pollos_petrel/train.csv")
     data.hist()
     plt.savefig("histogramas.png")
-
-
-if __name__ == '__main__':
-    make_histograms()
