@@ -11,7 +11,7 @@ pollos_petrel/example_r_submission.csv: setup_r src/example_submission.R
 	@echo "Creating R submission..."
 	src/example_submission.R
 
-pollos_petrel/mvb_submision.csv: setup_python src/mvb_submission.py
+pollos_petrel/mvb_submission.csv: setup_python src/mvb_submission.py
 	@echo "Creating MVB submission..."
 	src/mvb_submission.py
 
