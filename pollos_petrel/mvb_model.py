@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def split_data_target(dataset: pd.DataFrame) -> pd.DataFrame:
+def split_data_target(dataset: pd.DataFrame) -> tuple[pd.DataFrame,pd.DataFrame]:
     target = dataset[["target"]]
     numeric = dataset.drop(columns=["target", "id"])
     return numeric, target
