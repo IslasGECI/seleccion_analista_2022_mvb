@@ -1,21 +1,31 @@
 from sklearn.model_selection import train_test_split
 from pollos_petrel import read_training_dataset
 import pandas as pd
-from typing import Tuple
 
 
-def split_data_target(dataset: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    target = dataset[["target"]]
+def split_data(dataset: pd.DataFrame) -> pd.DataFrame:
     numeric = dataset.drop(columns=["target", "id"])
-    return numeric, target
+    return numeric
 
 
-def preprocces_training_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def split_target(dataset: pd.DataFrame) -> pd.DataFrame:
+    target = dataset[["target"]]
+    return target
+
+
+def preprocces_training_data() -> dict:
     training_dataset = read_training_dataset()
     training_dataset = training_dataset.dropna()
-    numeric, target = split_data_target(training_dataset)
+    numeric = split_data(training_dataset)
+    target = split_target(training_dataset)
     split_train_data, split_test_data, train_target, test_target = train_test_split(numeric, target)
-    return split_train_data, train_target, split_test_data, test_target
+    splited_data = {
+        "train_data": split_train_data,
+        "train_target": train_target,
+        "test_data": split_test_data,
+        "test_target": test_target,
+    }
+    return splited_data
 
 
 def write_mvb_submission():
