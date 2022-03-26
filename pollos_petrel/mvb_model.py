@@ -1,4 +1,7 @@
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline, Pipeline
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.preprocessing import StandardScaler
 from pollos_petrel import read_training_dataset
 import pandas as pd
 
@@ -18,14 +21,41 @@ def preprocces_training_data() -> dict:
     training_dataset = training_dataset.dropna()
     numeric = split_data(training_dataset)
     target = split_target(training_dataset)
-    split_train_data, split_test_data, train_target, test_target = train_test_split(numeric, target)
+    train_data, test_data, train_target, test_target = train_test_split(numeric, target)
     splited_data = {
-        "train_data": split_train_data,
+        "train_data": train_data,
         "train_target": train_target,
-        "test_data": split_test_data,
+        "test_data": test_data,
         "test_target": test_target,
     }
     return splited_data
+
+
+def set_model(splited_data: dict, option: int) -> Pipeline:
+    """Define y entrena el modelo escogido. Las opciones son:
+    0: LogisticRegression
+    1: LinearRegression
+
+    En el modelo linear se usan las columnas 'Longitud_ala' y
+        'Longitu_pluma_exterior_de_la_cola' por ser las variables con
+        una correlación más alta
+    """
+    if option == 1:
+        model = make_pipeline(StandardScaler(), LinearRegression())
+        model.fit(
+            splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
+            splited_data["train_target"],
+        )
+    elif option == 0:
+        model = make_pipeline(StandardScaler(), LogisticRegression())
+        model.fit(splited_data["train_data"], splited_data["train_target"]["target"].values)
+    else:
+        raise KeyError(
+            f"Escogiste la opción {option}."
+            f"Las opciones válidas son 0: LogisticRegression, 1: LinearRegression"
+        )
+    print(f"Modelo seleccionado: {model.steps}")
+    return model
 
 
 def write_mvb_submission():

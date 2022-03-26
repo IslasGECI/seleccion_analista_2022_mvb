@@ -1,4 +1,5 @@
-from pollos_petrel import split_data, split_target, preprocces_training_data
+from pollos_petrel import split_data, split_target, preprocces_training_data, set_model
+from sklearn.pipeline import Pipeline
 import pandas as pd
 
 
@@ -28,7 +29,13 @@ def test_preprocces_training_data():
         assert key in keys
 
 
-#    obtained_n_columns = splited_data['train_data'].shape[1]
-#    expected_n_columns = 6
-
-#    assert obtained_n_columns == expected_n_columns
+def test_set_model():
+    splited_data = preprocces_training_data()
+    model = set_model(splited_data, 0)
+    expected_model = "logisticregression"
+    assert model.steps[1][0] == expected_model
+    assert type(model) == Pipeline
+    model = set_model(splited_data, 1)
+    expected_model = "linearregression"
+    assert model.steps[1][0] == expected_model
+    assert type(model) == Pipeline
