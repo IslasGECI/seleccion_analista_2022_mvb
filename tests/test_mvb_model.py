@@ -1,4 +1,4 @@
-from pollos_petrel import split_data_target
+from pollos_petrel import split_data_target, preprocces_training_data
 import pandas as pd
 
 
@@ -12,3 +12,10 @@ def test_split_data_target():
     obtained_numeric_columns = numeric.shape[1]
     expected_numeric_columns = 1
     assert obtained_numeric_columns == expected_numeric_columns
+
+
+def test_preprocces_training_data():
+    train_data, train_target, test_data, test_target = preprocces_training_data()
+    obtained_n_columns = train_data.shape[1]
+    expected_n_columns = 6
+    assert obtained_n_columns == expected_n_columns
