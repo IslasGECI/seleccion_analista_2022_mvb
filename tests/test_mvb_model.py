@@ -31,7 +31,6 @@ def test_preprocces_training_data():
 
 def test_set_linear_regression():
     splited_data = preprocces_training_data()
-
     expected_model = "linearregression"
     obtained_model = set_model(splited_data, expected_model).steps[1][0]
     assert obtained_model == expected_model
@@ -42,4 +41,3 @@ def test_set_logistic_regression():
     expected_model = "logisticregression"
     obtained_model = set_model(splited_data, expected_model).steps[1][0]
     assert obtained_model == expected_model
-
