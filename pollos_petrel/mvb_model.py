@@ -46,15 +46,6 @@ def set_logistic_regression(splited_data: dict) -> Pipeline:
     return model
 
 
-def raise_key_error(option: int):
-    if isinstance(option, type(None)):
-        raise TypeError
-    raise KeyError(
-        f"Escogiste la opción {option}."
-        f"Las opciones válidas son 0: LogisticRegression, 1: LinearRegression"
-    )
-
-
 def set_model(splited_data: dict, option: int) -> Pipeline:
     """Define y entrena el modelo escogido. Las opciones son:
     0: LogisticRegression
