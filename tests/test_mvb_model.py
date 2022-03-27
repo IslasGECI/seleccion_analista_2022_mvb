@@ -26,4 +26,3 @@ def test_preprocces_training_data():
     keys = ["train_data", "train_target", "test_data", "test_target"]
     for key in splited_data.keys():
         assert key in keys
-
