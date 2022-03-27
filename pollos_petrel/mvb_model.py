@@ -31,7 +31,7 @@ def preprocces_training_data() -> dict:
     return splited_data
 
 
-def set_linear_regression(splited_data: pd.DataFrame) -> Pipeline:
+def set_linear_regression(splited_data: dict) -> Pipeline:
     model = make_pipeline(StandardScaler(), LinearRegression())
     model.fit(
         splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
@@ -40,7 +40,7 @@ def set_linear_regression(splited_data: pd.DataFrame) -> Pipeline:
     return model
 
 
-def set_logistic_regression(splited_data: pd.DataFrame) -> Pipeline:
+def set_logistic_regression(splited_data: dict) -> Pipeline:
     model = make_pipeline(StandardScaler(), LogisticRegression())
     model.fit(splited_data["train_data"], splited_data["train_target"]["target"].values)
     return model
