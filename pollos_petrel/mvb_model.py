@@ -20,9 +20,9 @@ def preprocces_training_data() -> dict:
     target = split_target(training_dataset)
     split_train_data, split_test_data, train_target, test_target = train_test_split(numeric, target)
     splited_data = {
-        "train_data": split_train_data,
+        "train_data": train_data,
         "train_target": train_target,
-        "test_data": split_test_data,
+        "test_data": test_data,
         "test_target": test_target,
     }
     return splited_data

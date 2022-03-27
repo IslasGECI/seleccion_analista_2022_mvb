@@ -27,8 +27,3 @@ def test_preprocces_training_data():
     for key in splited_data.keys():
         assert key in keys
 
-
-#    obtained_n_columns = splited_data['train_data'].shape[1]
-#    expected_n_columns = 6
-
-#    assert obtained_n_columns == expected_n_columns
