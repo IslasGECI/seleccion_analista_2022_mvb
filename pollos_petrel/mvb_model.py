@@ -31,29 +31,44 @@ def preprocces_training_data() -> dict:
     return splited_data
 
 
+def set_linear_regression(splited_data: pd.DataFrame) -> Pipeline:
+    model = make_pipeline(StandardScaler(), LinearRegression())
+    model.fit(
+        splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
+        splited_data["train_target"],
+    )
+    return model
+
+
+def set_logistic_regression(splited_data: pd.DataFrame) -> Pipeline:
+    model = make_pipeline(StandardScaler(), LogisticRegression())
+    model.fit(splited_data["train_data"], splited_data["train_target"]["target"].values)
+    return model
+
+
+def raise_key_error(option: int):
+    if isinstance(option, type(None)):
+        raise TypeError
+    raise KeyError(
+        f"Escogiste la opción {option}."
+        f"Las opciones válidas son 0: LogisticRegression, 1: LinearRegression"
+    )
+
+
 def set_model(splited_data: dict, option: int) -> Pipeline:
     """Define y entrena el modelo escogido. Las opciones son:
     0: LogisticRegression
     1: LinearRegression
 
     En el modelo linear se usan las columnas 'Longitud_ala' y
-        'Longitu_pluma_exterior_de_la_cola' por ser las variables con
-        una correlación más alta
+            'Longitu_pluma_exterior_de_la_cola' por ser las variables con
+            una correlación más alta
     """
     if option == 1:
-        model = make_pipeline(StandardScaler(), LinearRegression())
-        model.fit(
-            splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
-            splited_data["train_target"],
-        )
+        model = set_linear_regression(splited_data)
     elif option == 0:
-        model = make_pipeline(StandardScaler(), LogisticRegression())
-        model.fit(splited_data["train_data"], splited_data["train_target"]["target"].values)
-    else:
-        raise KeyError(
-            f"Escogiste la opción {option}."
-            f"Las opciones válidas son 0: LogisticRegression, 1: LinearRegression"
-        )
+        model = set_logistic_regression(splited_data)
+
     print(f"Modelo seleccionado: {model.steps}")
     return model
 

@@ -27,18 +27,25 @@ def test_preprocces_training_data():
     keys = ["train_data", "train_target", "test_data", "test_target"]
     for key in splited_data.keys():
         assert key in keys
-<<<<<<< HEAD
-=======
 
 
-def test_set_model():
+def test_set_linear_regression():
+    splited_data = preprocces_training_data()
+    model = set_model(splited_data, 1)
+    expected_model = "linearregression"
+    obtained_model = model.steps[1][0]
+    assert obtained_model == expected_model
+    obtained_type = type(model)
+    expected_type = Pipeline
+    assert obtained_type == expected_type
+
+
+def test_set_logistic_regression():
     splited_data = preprocces_training_data()
     model = set_model(splited_data, 0)
     expected_model = "logisticregression"
-    assert model.steps[1][0] == expected_model
-    assert type(model) == Pipeline
-    model = set_model(splited_data, 1)
-    expected_model = "linearregression"
-    assert model.steps[1][0] == expected_model
-    assert type(model) == Pipeline
->>>>>>> arregla_multiples_salidas
+    obtained_model = model.steps[1][0]
+    assert obtained_model == expected_model
+    obtained_type = type(model)
+    expected_type = Pipeline
+    assert obtained_type == expected_type
