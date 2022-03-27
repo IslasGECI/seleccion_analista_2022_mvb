@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
-from pollos_petrel import read_training_dataset
+from pollos_petrel import read_training_dataset, read_testing_dataset, drop_all_but_id
 import pandas as pd
 
 
@@ -31,7 +31,7 @@ def preprocces_training_data() -> dict:
     return splited_data
 
 
-class LinearModel:
+class LinearModel(Pipeline):
     def __init__(self, splited_data):
         self.splited_data = splited_data
 
@@ -44,7 +44,7 @@ class LinearModel:
         return model
 
 
-class LogisticModel:
+class LogisticModel(Pipeline):
     def __init__(self, splited_data):
         self.splited_data = splited_data
 
@@ -69,6 +69,15 @@ def set_model(splited_data: dict, RegressionModel) -> Pipeline:
 
     print(f"Modelo seleccionado: {model.steps}")
     return model
+
+
+def make_predictions(model: Pipeline) -> pd.DataFrame:
+    testing_dataset = read_testing_dataset()
+    testing_dataset = testing_dataset.dropna()
+    submission = drop_all_but_id(testing_dataset)
+    target_predictions = model.predict(testing_dataset[model.feature_names_in_])
+    submission["target"] = target_predictions
+    return submission
 
 
 def write_mvb_submission():
