@@ -18,7 +18,7 @@ def preprocces_training_data() -> dict:
     training_dataset = training_dataset.dropna()
     numeric = split_data(training_dataset)
     target = split_target(training_dataset)
-    split_train_data, split_test_data, train_target, test_target = train_test_split(numeric, target)
+    train_data, test_data, train_target, test_target = train_test_split(numeric, target)
     splited_data = {
         "train_data": train_data,
         "train_target": train_target,
