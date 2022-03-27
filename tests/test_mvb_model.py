@@ -1,4 +1,11 @@
-from pollos_petrel import split_data, split_target, preprocces_training_data
+from pollos_petrel import (
+    split_data,
+    split_target,
+    preprocces_training_data,
+    set_model,
+    LinearModel,
+    LogisticModel,
+)
 import pandas as pd
 
 
@@ -26,3 +33,17 @@ def test_preprocces_training_data():
     keys = ["train_data", "train_target", "test_data", "test_target"]
     for key in splited_data.keys():
         assert key in keys
+
+
+def test_set_linear_regression():
+    splited_data = preprocces_training_data()
+    expected_model = "linearregression"
+    obtained_model = set_model(splited_data, LinearModel).steps[1][0]
+    assert obtained_model == expected_model
+
+
+def test_set_logistic_regression():
+    splited_data = preprocces_training_data()
+    expected_model = "logisticregression"
+    obtained_model = set_model(splited_data, LogisticModel).steps[1][0]
+    assert obtained_model == expected_model
