@@ -1,5 +1,5 @@
 from pollos_petrel import split_data, split_target, preprocces_training_data, set_model
-from sklearn.pipeline import Pipeline
+
 import pandas as pd
 
 
@@ -31,21 +31,15 @@ def test_preprocces_training_data():
 
 def test_set_linear_regression():
     splited_data = preprocces_training_data()
-    model = set_model(splited_data, 1)
+
     expected_model = "linearregression"
-    obtained_model = model.steps[1][0]
+    obtained_model = set_model(splited_data, expected_model).steps[1][0]
     assert obtained_model == expected_model
-    obtained_type = type(model)
-    expected_type = Pipeline
-    assert obtained_type == expected_type
 
 
 def test_set_logistic_regression():
     splited_data = preprocces_training_data()
-    model = set_model(splited_data, 0)
     expected_model = "logisticregression"
-    obtained_model = model.steps[1][0]
+    obtained_model = set_model(splited_data, expected_model).steps[1][0]
     assert obtained_model == expected_model
-    obtained_type = type(model)
-    expected_type = Pipeline
-    assert obtained_type == expected_type
+

@@ -46,7 +46,7 @@ def set_logistic_regression(splited_data: dict) -> Pipeline:
     return model
 
 
-def set_model(splited_data: dict, option: int) -> Pipeline:
+def set_model(splited_data: dict, regression_type: int) -> Pipeline:
     """Define y entrena el modelo escogido. Las opciones son:
     0: LogisticRegression
     1: LinearRegression
@@ -55,9 +55,9 @@ def set_model(splited_data: dict, option: int) -> Pipeline:
             'Longitu_pluma_exterior_de_la_cola' por ser las variables con
             una correlación más alta
     """
-    if option == 1:
+    if regression_type == "linearregression":
         model = set_linear_regression(splited_data)
-    elif option == 0:
+    elif regression_type == "logisticregression":
         model = set_logistic_regression(splited_data)
 
     print(f"Modelo seleccionado: {model.steps}")
