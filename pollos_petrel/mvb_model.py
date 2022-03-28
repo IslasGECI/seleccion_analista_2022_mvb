@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error
 from pollos_petrel import read_training_dataset, read_testing_dataset, drop_all_but_id
 import pandas as pd
 
@@ -78,6 +79,13 @@ def make_predictions(model: Pipeline) -> pd.DataFrame:
     target_predictions = model.predict(testing_dataset[model.feature_names_in_])
     submission["target"] = target_predictions
     return submission
+
+
+def get_error_model(splited_data: dict, model: Pipeline) -> float:
+    target_predicted = model.predict(splited_data["test_data"][model.feature_names_in_])
+    error = mean_absolute_error(target_predicted, splited_data["test_target"])
+    print(f"En promedio el error de nuestro modelo es {error:.2f} dias ")
+    return error
 
 
 def write_mvb_submission():
