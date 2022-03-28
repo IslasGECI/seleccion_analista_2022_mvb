@@ -6,6 +6,7 @@ from pollos_petrel import (
     LinearModel,
     LogisticModel,
     make_predictions,
+    get_error_model,
 )
 import pandas as pd
 
@@ -59,3 +60,10 @@ def test_make_predictions():
     obtained_colums = predictions.shape[1]
     expected_columns = 2
     assert obtained_colums == expected_columns
+
+
+def test_get_error_model():
+    splited_data = preprocces_training_data()
+    model = set_model(splited_data, LinearModel)
+    obtained_error = get_error_model(splited_data, model)
+    assert obtained_error > 0
