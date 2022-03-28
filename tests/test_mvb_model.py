@@ -8,6 +8,8 @@ from pollos_petrel import (
     make_predictions,
     get_error_model,
     write_mvb_submission,
+    write_linear_submission,
+    write_logistic_submission,
 )
 import os
 import pandas as pd
@@ -76,6 +78,30 @@ def test_write_mvb_submission():
     if os.path.exists(submission_path):
         os.remove(submission_path)
     write_mvb_submission(LinearModel)
+    submission = pd.read_csv(submission_path)
+    submission_rows = submission.shape[0]
+    assert submission_rows > 1
+    assert os.path.exists(submission_path)
+    os.remove(submission_path)
+
+
+def test_write_linear_submission():
+    submission_path = "pollos_petrel/mvb_submission.csv"
+    if os.path.exists(submission_path):
+        os.remove(submission_path)
+    write_linear_submission()
+    submission = pd.read_csv(submission_path)
+    submission_rows = submission.shape[0]
+    assert submission_rows > 1
+    assert os.path.exists(submission_path)
+    os.remove(submission_path)
+
+
+def test_write_logistic_submission():
+    submission_path = "pollos_petrel/mvb_submission.csv"
+    if os.path.exists(submission_path):
+        os.remove(submission_path)
+    write_logistic_submission()
     submission = pd.read_csv(submission_path)
     submission_rows = submission.shape[0]
     assert submission_rows > 1

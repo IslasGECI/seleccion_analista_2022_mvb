@@ -101,3 +101,11 @@ def write_mvb_submission(RegressionModel):
     submission_path = "pollos_petrel/mvb_submission.csv"
     submission = make_predictions(model)
     submission.to_csv(submission_path)
+
+
+def write_linear_submission():
+    write_mvb_submission(LinearModel)
+
+
+def write_logistic_submission():
+    write_mvb_submission(LogisticModel)

@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 
-from pollos_petrel import write_mvb_submission
-from pollos_petrel import LinearModel
-
-# from pollos_petrel import LogisticModel
+from pollos_petrel import write_linear_submission
 
 
-write_mvb_submission(LinearModel)
-
-# write_mvb_submission(LogisticModel)
+write_linear_submission()
