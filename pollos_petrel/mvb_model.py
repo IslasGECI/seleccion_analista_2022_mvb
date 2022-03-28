@@ -77,7 +77,7 @@ def make_predictions(model: Pipeline) -> pd.DataFrame:
     testing_dataset = testing_dataset.dropna()
     submission = drop_all_but_id(testing_dataset)
     target_predictions = model.predict(testing_dataset[model.feature_names_in_])
-    submission["target"] = target_predictions
+    submission = submission.assign(target=target_predictions)
     return submission
 
 
@@ -88,5 +88,16 @@ def get_error_model(splited_data: dict, model: Pipeline) -> float:
     return error
 
 
-def write_mvb_submission():
-    pass
+def write_mvb_submission(RegressionModel):
+    """Define el modelo que quieres usar:
+    *. LogisticModel
+    *. LinearModel
+
+    LinearModel es el mejor
+    """
+    splited_data = preprocces_training_data()
+    model = set_model(splited_data, RegressionModel)
+    get_error_model(splited_data, model)
+    submission_path = "pollos_petrel/mvb_submission.csv"
+    submission = make_predictions(model)
+    submission.to_csv(submission_path)
