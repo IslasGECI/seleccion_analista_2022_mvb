@@ -5,6 +5,7 @@ from pollos_petrel import (
     set_model,
     LinearModel,
     LogisticModel,
+    make_predictions,
 )
 import pandas as pd
 
@@ -47,3 +48,14 @@ def test_set_logistic_regression():
     expected_model = "logisticregression"
     obtained_model = set_model(splited_data, LogisticModel).steps[1][0]
     assert obtained_model == expected_model
+
+
+def test_make_predictions():
+    splited_data = preprocces_training_data()
+    model = set_model(splited_data, LinearModel)
+    predictions = make_predictions(model)
+    is_target_null = predictions["target"].isnull().any()
+    assert not (is_target_null)
+    obtained_colums = predictions.shape[1]
+    expected_columns = 2
+    assert obtained_colums == expected_columns
