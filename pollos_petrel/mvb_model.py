@@ -92,7 +92,7 @@ def get_error_model(splited_data: dict, model: Pipeline) -> float:
     return error
 
 
-def write_mvb_submission(RegressionModel):
+def write_mvb_submission(RegressionModel,submission_path):
     """Define el modelo que quieres usar:
     *. LogisticModel
     *. LinearModel
@@ -102,14 +102,15 @@ def write_mvb_submission(RegressionModel):
     splited_data = preprocces_training_data()
     model = set_model(splited_data, RegressionModel)
     get_error_model(splited_data, model)
-    submission_path = "pollos_petrel/mvb_submission.csv"
     submission = make_predictions(model)
     submission.to_csv(submission_path)
 
 
 def write_linear_submission():
-    write_mvb_submission(LinearModel)
+	file_path = "pollos_petrel/mvb_linear_submission.csv"
+	write_mvb_submission(LinearModel,file_path)
 
 
 def write_logistic_submission():
-    write_mvb_submission(LogisticModel)
+	file_path = "pollos_petrel/mvb_logistic_submission.csv"
+	write_mvb_submission(LogisticModel,file_path)
