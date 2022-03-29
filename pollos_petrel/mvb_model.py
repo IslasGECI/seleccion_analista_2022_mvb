@@ -4,9 +4,8 @@ from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_error
-from pollos_petrel import read_training_dataset, read_testing_dataset, drop_all_but_id
+from pollos_petrel import read_training_dataset, read_testing_dataset
 import pandas as pd
-import numpy as np
 
 
 def split_data(dataset: pd.DataFrame) -> pd.DataFrame:
@@ -32,6 +31,16 @@ def preprocces_training_data() -> dict:
         "test_target": test_target,
     }
     return splited_data
+
+
+def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
+    testing_dataset = read_testing_dataset()
+    no_nan_dataset = testing_dataset[["id"]].copy()
+    imputer = SimpleImputer()
+    no_nan_dataset.loc[:, model.feature_names_in_] = imputer.fit_transform(
+        testing_dataset.loc[:, model.feature_names_in_]
+    )
+    return no_nan_dataset
 
 
 class LinearModel(Pipeline):
@@ -75,12 +84,9 @@ def set_model(splited_data: dict, RegressionModel) -> Pipeline:
 
 
 def make_predictions(model: Pipeline) -> pd.DataFrame:
-    testing_dataset = read_testing_dataset()
-    imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
-    no_nan_dataset = imputer.fit_transform(testing_dataset.loc[:, model.feature_names_in_])
-    no_nan_dataset = pd.DataFrame(no_nan_dataset, columns=model.feature_names_in_)
-    submission = drop_all_but_id(testing_dataset)
-    target_predictions = model.predict(no_nan_dataset)
+    testing_dataset = preprocces_testing_data(model)
+    target_predictions = model.predict(testing_dataset.loc[:, model.feature_names_in_])
+    submission = testing_dataset[["id"]].copy()
     submission = submission.assign(target=target_predictions)
     return submission
 
@@ -92,7 +98,7 @@ def get_error_model(splited_data: dict, model: Pipeline) -> float:
     return error
 
 
-def write_mvb_submission(RegressionModel,submission_path):
+def write_mvb_submission(RegressionModel, submission_path):
     """Define el modelo que quieres usar:
     *. LogisticModel
     *. LinearModel
@@ -107,10 +113,10 @@ def write_mvb_submission(RegressionModel,submission_path):
 
 
 def write_linear_submission():
-	file_path = "pollos_petrel/mvb_linear_submission.csv"
-	write_mvb_submission(LinearModel,file_path)
+    file_path = "pollos_petrel/mvb_linear_submission.csv"
+    write_mvb_submission(LinearModel, file_path)
 
 
 def write_logistic_submission():
-	file_path = "pollos_petrel/mvb_logistic_submission.csv"
-	write_mvb_submission(LogisticModel,file_path)
+    file_path = "pollos_petrel/mvb_logistic_submission.csv"
+    write_mvb_submission(LogisticModel, file_path)
