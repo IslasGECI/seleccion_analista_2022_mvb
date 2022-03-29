@@ -15,23 +15,22 @@ import pandas as pd
 import pytest
 
 
-def test_split_data():
+@pytest.fixture
+def setup_test_split(split_something):
     data = {"id": [1, 2], "numeros": [5, 6], "target": [3, 4]}
     dataset = pd.DataFrame(data=data)
-    numeric = split_data(dataset)
-
-    obtained_numeric_columns = numeric.shape[1]
-    expected_numeric_columns = 1
-    assert obtained_numeric_columns == expected_numeric_columns
+    splited = split_something(dataset)
+    return splited
 
 
-def test_split_target():
-    data = {"id": [1, 2], "numeros": [5, 6], "target": [3, 4]}
-    dataset = pd.DataFrame(data=data)
-    target = split_target(dataset)
-    obtained_target_columns = target.shape[1]
-    expected_target_columns = 1
-    assert obtained_target_columns == expected_target_columns
+test_data = [(split_data), (split_target)]
+
+
+@pytest.mark.parametrize("split_something", test_data, ids=["spliting_data", "spliting_target"])
+def test_split_something(setup_test_split):
+    expected_columns = 1
+    obtained_colums = setup_test_split.shape[1]
+    assert expected_columns == obtained_colums
 
 
 def test_preprocces_training_data():
@@ -70,6 +69,9 @@ def test_get_error_model():
     model = set_model(splited_data, LinearModel)
     obtained_error = get_error_model(splited_data, model)
     assert obtained_error > 0
+
+
+test_data = [write_linear_submission, write_logistic_submission]
 
 
 def test_write_linear_submission():
