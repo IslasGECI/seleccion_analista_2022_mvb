@@ -2,9 +2,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_error
 from pollos_petrel import read_training_dataset, read_testing_dataset, drop_all_but_id
 import pandas as pd
+import numpy as np
 
 
 def split_data(dataset: pd.DataFrame) -> pd.DataFrame:
@@ -74,10 +76,12 @@ def set_model(splited_data: dict, RegressionModel) -> Pipeline:
 
 def make_predictions(model: Pipeline) -> pd.DataFrame:
     testing_dataset = read_testing_dataset()
-    testing_dataset = testing_dataset.dropna()
+    imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
+    no_nan_dataset = imputer.fit_transform(testing_dataset.loc[:, model.feature_names_in_])
+    no_nan_dataset = pd.DataFrame(no_nan_dataset, columns=model.feature_names_in_)
     submission = drop_all_but_id(testing_dataset)
-    target_predictions = model.predict(testing_dataset[model.feature_names_in_])
-    submission["target"] = target_predictions
+    target_predictions = model.predict(no_nan_dataset)
+    submission = submission.assign(target=target_predictions)
     return submission
 
 
@@ -88,5 +92,24 @@ def get_error_model(splited_data: dict, model: Pipeline) -> float:
     return error
 
 
-def write_mvb_submission():
-    pass
+def write_mvb_submission(RegressionModel):
+    """Define el modelo que quieres usar:
+    *. LogisticModel
+    *. LinearModel
+
+    LinearModel es el mejor
+    """
+    splited_data = preprocces_training_data()
+    model = set_model(splited_data, RegressionModel)
+    get_error_model(splited_data, model)
+    submission_path = "pollos_petrel/mvb_submission.csv"
+    submission = make_predictions(model)
+    submission.to_csv(submission_path)
+
+
+def write_linear_submission():
+    write_mvb_submission(LinearModel)
+
+
+def write_logistic_submission():
+    write_mvb_submission(LogisticModel)
