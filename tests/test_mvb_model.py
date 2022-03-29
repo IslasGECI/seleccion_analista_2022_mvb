@@ -7,12 +7,12 @@ from pollos_petrel import (
     LogisticModel,
     make_predictions,
     get_error_model,
-    write_mvb_submission,
     write_linear_submission,
     write_logistic_submission,
 )
 import os
 import pandas as pd
+import pytest
 
 
 def test_split_data():
@@ -41,17 +41,16 @@ def test_preprocces_training_data():
         assert key in keys
 
 
-def test_set_linear_regression():
-    splited_data = preprocces_training_data()
-    expected_model = "linearregression"
-    obtained_model = set_model(splited_data, LinearModel).steps[1][0]
-    assert obtained_model == expected_model
+testdata = [
+    ("linearregression", LinearModel),
+    ("logisticregression", LogisticModel),
+]
 
 
-def test_set_logistic_regression():
+@pytest.mark.parametrize("expected_model,  Model", testdata, ids=["linear", "logistic"])
+def test_set_linear_regression(expected_model, Model):
     splited_data = preprocces_training_data()
-    expected_model = "logisticregression"
-    obtained_model = set_model(splited_data, LogisticModel).steps[1][0]
+    obtained_model = set_model(splited_data, Model).steps[1][0]
     assert obtained_model == expected_model
 
 
@@ -71,18 +70,6 @@ def test_get_error_model():
     model = set_model(splited_data, LinearModel)
     obtained_error = get_error_model(splited_data, model)
     assert obtained_error > 0
-
-
-def test_write_mvb_submission():
-    submission_path = "pollos_petrel/mvb_linear_submission.csv"
-    if os.path.exists(submission_path):
-        os.remove(submission_path)
-    write_mvb_submission(LinearModel, submission_path)
-    submission = pd.read_csv(submission_path)
-    submission_rows = submission.shape[0]
-    assert submission_rows > 1
-    assert os.path.exists(submission_path)
-    os.remove(submission_path)
 
 
 def test_write_linear_submission():
