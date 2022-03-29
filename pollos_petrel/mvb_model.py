@@ -2,9 +2,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_error
 from pollos_petrel import read_training_dataset, read_testing_dataset, drop_all_but_id
 import pandas as pd
+import numpy as np
 
 
 def split_data(dataset: pd.DataFrame) -> pd.DataFrame:
@@ -74,9 +76,11 @@ def set_model(splited_data: dict, RegressionModel) -> Pipeline:
 
 def make_predictions(model: Pipeline) -> pd.DataFrame:
     testing_dataset = read_testing_dataset()
-    testing_dataset = testing_dataset.dropna()
+    imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
+    no_nan_dataset = imputer.fit_transform(testing_dataset.loc[:, model.feature_names_in_])
+    no_nan_dataset = pd.DataFrame(no_nan_dataset, columns=model.feature_names_in_)
     submission = drop_all_but_id(testing_dataset)
-    target_predictions = model.predict(testing_dataset[model.feature_names_in_])
+    target_predictions = model.predict(no_nan_dataset)
     submission = submission.assign(target=target_predictions)
     return submission
 
