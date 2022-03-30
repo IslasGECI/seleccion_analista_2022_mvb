@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-from pollos_petrel import write_linear_submission, write_logistic_submission
+from pollos_petrel import LogisticModel, LinearModel
 
+linear = LinearModel()
+linear.write_submission()
 
-write_linear_submission()
-write_logistic_submission()
+logistic = LogisticModel()
+logistic.write_submission()

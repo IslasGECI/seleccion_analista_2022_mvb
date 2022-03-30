@@ -44,8 +44,8 @@ def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
 
 
 class LinearModel(Pipeline):
-    def __init__(self, splited_data):
-        self.splited_data = splited_data
+    def __init__(self):
+        self.splited_data = preprocces_training_data()
 
     def set_regression(self) -> Pipeline:
         model = make_pipeline(StandardScaler(), LinearRegression())
@@ -55,10 +55,14 @@ class LinearModel(Pipeline):
         )
         return model
 
+    def write_submission(self):
+        file_path = "pollos_petrel/mvb_linear_submission.csv"
+        write_mvb_submission(LinearModel, file_path)
+
 
 class LogisticModel(Pipeline):
-    def __init__(self, splited_data):
-        self.splited_data = splited_data
+    def __init__(self):
+        self.splited_data = preprocces_training_data()
 
     def set_regression(self) -> Pipeline:
         model = make_pipeline(StandardScaler(), LogisticRegression())
@@ -66,6 +70,10 @@ class LogisticModel(Pipeline):
             self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
         )
         return model
+
+    def write_submission(self):
+        file_path = "pollos_petrel/mvb_logistic_submission.csv"
+        write_mvb_submission(LinearModel, file_path)
 
 
 def set_model(splited_data: dict, RegressionModel) -> Pipeline:
@@ -77,7 +85,7 @@ def set_model(splited_data: dict, RegressionModel) -> Pipeline:
             'Longitu_pluma_exterior_de_la_cola' por ser las variables con
             una correlación más alta
     """
-    model = RegressionModel(splited_data).set_regression()
+    model = RegressionModel().set_regression()
 
     print(f"Modelo seleccionado: {model.steps}")
     return model
@@ -112,11 +120,3 @@ def write_mvb_submission(RegressionModel, submission_path):
     submission.to_csv(submission_path)
 
 
-def write_linear_submission():
-    file_path = "pollos_petrel/mvb_linear_submission.csv"
-    write_mvb_submission(LinearModel, file_path)
-
-
-def write_logistic_submission():
-    file_path = "pollos_petrel/mvb_logistic_submission.csv"
-    write_mvb_submission(LogisticModel, file_path)
