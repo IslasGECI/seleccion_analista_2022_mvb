@@ -71,19 +71,14 @@ def test_get_error_model():
     assert obtained_error > 0
 
 
-<<<<<<< HEAD
-def test_write_linear_submission():
-    submission_path = "pollos_petrel/mvb_linear_submission.csv"
-=======
 test_data = [
-    (write_linear_submission, "pollos_petrel/mvb_linear_submission.csv"),
-    (write_logistic_submission, "pollos_petrel/mvb_logistic_submission.csv"),
+    (write_linear_submission, "pollos_petrel/mvb_linear_submission.csv"),  # type: ignore
+    (write_logistic_submission, "pollos_petrel/mvb_logistic_submission.csv"),  # type: ignore
 ]
 
 
 @pytest.fixture
 def setup_test_write_submission(submission_path, write_some_submission):
->>>>>>> second_setup_test
     if os.path.exists(submission_path):
         os.remove(submission_path)
     write_some_submission()
