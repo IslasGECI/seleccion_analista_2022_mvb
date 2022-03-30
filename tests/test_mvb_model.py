@@ -71,28 +71,27 @@ def test_get_error_model():
     assert obtained_error > 0
 
 
-test_data = [write_linear_submission, write_logistic_submission]
+test_data = [
+    (write_linear_submission, "pollos_petrel/mvb_linear_submission.csv"),
+    (write_logistic_submission, "pollos_petrel/mvb_logistic_submission.csv"),
+]
 
 
-def test_write_linear_submission():
-    submission_path = "pollos_petrel/mvb_linear_submission.csv"
+@pytest.fixture
+def setup_test_write_submission(submission_path, write_some_submission):
     if os.path.exists(submission_path):
         os.remove(submission_path)
-    write_linear_submission()
+    write_some_submission()
     submission = pd.read_csv(submission_path)
-    submission_rows = submission.shape[0]
-    assert submission_rows > 1
-    assert os.path.exists(submission_path)
-    os.remove(submission_path)
+    return submission
 
 
-def test_write_logistic_submission():
-    submission_path = "pollos_petrel/mvb_logistic_submission.csv"
-    if os.path.exists(submission_path):
-        os.remove(submission_path)
-    write_logistic_submission()
-    submission = pd.read_csv(submission_path)
+@pytest.mark.parametrize(
+    "write_some_submission,submission_path",
+    test_data,
+    ids=["Escribiendo LinearModel", "Escribiendo LogisticModel"],
+)
+def test_write_something(setup_test_write_submission):
+    submission = setup_test_write_submission
     submission_rows = submission.shape[0]
     assert submission_rows > 1
-    assert os.path.exists(submission_path)
-    os.remove(submission_path)
