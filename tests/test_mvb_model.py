@@ -71,9 +71,6 @@ def test_get_error_model():
     assert obtained_error > 0
 
 
-test_data = [write_linear_submission, write_logistic_submission]
-
-
 def test_write_linear_submission():
     submission_path = "pollos_petrel/mvb_linear_submission.csv"
     if os.path.exists(submission_path):
