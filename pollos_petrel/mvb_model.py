@@ -44,20 +44,24 @@ def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
 
 
 class LinearModel(Pipeline):
-    def __init__(self):
-        self.splited_data = preprocces_training_data()
+	def __init__(self):
+		self.splited_data = preprocces_training_data()
+		self.regression=LinearModel
 
-    def set_regression(self) -> Pipeline:
-        model = make_pipeline(StandardScaler(), LinearRegression())
-        model.fit(
-            self.splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
-            self.splited_data["train_target"],
-        )
-        return model
+	def set_regression(self) -> Pipeline:
+		model = make_pipeline(StandardScaler(), LinearRegression())
+		model.fit(
+			self.splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
+			self.splited_data["train_target"],
+		)
+		return model
 
-    def write_submission(self):
-        file_path = "pollos_petrel/mvb_linear_submission.csv"
-        write_mvb_submission(LinearModel, file_path)
+	def write_submission(self):
+		submission_path = "pollos_petrel/mvb_linear_submission.csv"
+		model = self.regression().set_regression()
+		get_error_model(self.splited_data, model)
+		submission = make_predictions(model)
+		submission.to_csv(submission_path)
 
 
 class LogisticModel(Pipeline):
@@ -113,11 +117,7 @@ def write_mvb_submission(RegressionModel, submission_path):
 
     LinearModel es el mejor
     """
-    splited_data = preprocces_training_data()
-    model = set_model(RegressionModel)
-    get_error_model(splited_data, model)
-    submission = make_predictions(model)
-    submission.to_csv(submission_path)
+
 
 
 def write_both_submissions():
