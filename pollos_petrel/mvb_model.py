@@ -76,7 +76,7 @@ class LogisticModel(Pipeline):
         write_mvb_submission(LogisticModel, file_path)
 
 
-def set_model(splited_data: dict, RegressionModel) -> Pipeline:
+def set_model(RegressionModel) -> Pipeline:
     """Define y entrena el modelo escogido. Las opciones son:
     *- LinearModel
     *- LogisticModel
@@ -114,7 +114,7 @@ def write_mvb_submission(RegressionModel, submission_path):
     LinearModel es el mejor
     """
     splited_data = preprocces_training_data()
-    model = set_model(splited_data, RegressionModel)
+    model = set_model(RegressionModel)
     get_error_model(splited_data, model)
     submission = make_predictions(model)
     submission.to_csv(submission_path)
