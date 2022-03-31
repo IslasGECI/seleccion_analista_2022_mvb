@@ -118,3 +118,11 @@ def write_mvb_submission(RegressionModel, submission_path):
     get_error_model(splited_data, model)
     submission = make_predictions(model)
     submission.to_csv(submission_path)
+
+
+def write_both_submissions():
+    linear = LinearModel()
+    linear.write_submission()
+
+    logistic = LogisticModel()
+    logistic.write_submission()

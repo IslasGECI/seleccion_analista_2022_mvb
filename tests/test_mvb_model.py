@@ -7,6 +7,7 @@ from pollos_petrel import (
     LogisticModel,
     make_predictions,
     get_error_model,
+    write_both_submissions,
 )
 import os
 import pandas as pd
@@ -94,3 +95,21 @@ def test_write_submission(setup_test_write_submission):
     submission = setup_test_write_submission
     submission_rows = submission.shape[0]
     assert submission_rows > 1
+
+
+test_data = [
+    ("pollos_petrel/mvb_linear_submission.csv"),  # type: ignore
+    ("pollos_petrel/mvb_logistic_submission.csv"),  # type: ignore
+]
+
+
+@pytest.mark.parametrize(
+    "submission_path",
+    test_data,
+    ids=["Probando LinearModel", "Probando LogisticModel"],
+)
+def test_write_both_submissions(submission_path):
+    if os.path.exists(submission_path):
+        os.remove(submission_path)
+    write_both_submissions()
+    assert os.path.exists(submission_path)
