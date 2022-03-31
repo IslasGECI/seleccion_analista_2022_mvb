@@ -46,12 +46,6 @@ endef
     tests_r
 
 check:
-	R -e "library(styler)" \
-      -e "resumen <- style_dir('R')" \
-      -e "resumen <- rbind(resumen, style_dir('src'))" \
-      -e "resumen <- rbind(resumen, style_dir('tests'))" \
-      -e "any(resumen[[2]])" \
-      | grep FALSE
 	black --check --line-length 100 ${module}
 	black --check --line-length 100 src
 	black --check --line-length 100 tests
@@ -61,6 +55,12 @@ check:
 	mypy ${module}
 	mypy src
 	mypy tests
+	R -e "library(styler)" \
+      -e "resumen <- style_dir('R')" \
+      -e "resumen <- rbind(resumen, style_dir('src'))" \
+      -e "resumen <- rbind(resumen, style_dir('tests'))" \
+      -e "any(resumen[[2]])" \
+      | grep FALSE
 
 clean:
 	rm --force --recursive ${module}.egg-info
