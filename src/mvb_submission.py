@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from pollos_petrel import write_linear_submission
+from pollos_petrel import write_both_submissions
 
 
-write_linear_submission()
+write_both_submissions()

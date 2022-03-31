@@ -4,9 +4,8 @@ from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_error
-from pollos_petrel import read_training_dataset, read_testing_dataset, drop_all_but_id
+from pollos_petrel import read_training_dataset, read_testing_dataset
 import pandas as pd
-import numpy as np
 
 
 def split_data(dataset: pd.DataFrame) -> pd.DataFrame:
@@ -34,9 +33,19 @@ def preprocces_training_data() -> dict:
     return splited_data
 
 
+def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
+    testing_dataset = read_testing_dataset()
+    no_nan_dataset = testing_dataset[["id"]].copy()
+    imputer = SimpleImputer()
+    no_nan_dataset.loc[:, model.feature_names_in_] = imputer.fit_transform(
+        testing_dataset.loc[:, model.feature_names_in_]
+    )
+    return no_nan_dataset
+
+
 class LinearModel(Pipeline):
-    def __init__(self, splited_data):
-        self.splited_data = splited_data
+    def __init__(self):
+        self.splited_data = preprocces_training_data()
 
     def set_regression(self) -> Pipeline:
         model = make_pipeline(StandardScaler(), LinearRegression())
@@ -46,10 +55,14 @@ class LinearModel(Pipeline):
         )
         return model
 
+    def write_submission(self):
+        file_path = "pollos_petrel/mvb_linear_submission.csv"
+        write_mvb_submission(LinearModel, file_path)
+
 
 class LogisticModel(Pipeline):
-    def __init__(self, splited_data):
-        self.splited_data = splited_data
+    def __init__(self):
+        self.splited_data = preprocces_training_data()
 
     def set_regression(self) -> Pipeline:
         model = make_pipeline(StandardScaler(), LogisticRegression())
@@ -57,6 +70,10 @@ class LogisticModel(Pipeline):
             self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
         )
         return model
+
+    def write_submission(self):
+        file_path = "pollos_petrel/mvb_logistic_submission.csv"
+        write_mvb_submission(LogisticModel, file_path)
 
 
 def set_model(splited_data: dict, RegressionModel) -> Pipeline:
@@ -68,19 +85,16 @@ def set_model(splited_data: dict, RegressionModel) -> Pipeline:
             'Longitu_pluma_exterior_de_la_cola' por ser las variables con
             una correlación más alta
     """
-    model = RegressionModel(splited_data).set_regression()
+    model = RegressionModel().set_regression()
 
     print(f"Modelo seleccionado: {model.steps}")
     return model
 
 
 def make_predictions(model: Pipeline) -> pd.DataFrame:
-    testing_dataset = read_testing_dataset()
-    imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
-    no_nan_dataset = imputer.fit_transform(testing_dataset.loc[:, model.feature_names_in_])
-    no_nan_dataset = pd.DataFrame(no_nan_dataset, columns=model.feature_names_in_)
-    submission = drop_all_but_id(testing_dataset)
-    target_predictions = model.predict(no_nan_dataset)
+    testing_dataset = preprocces_testing_data(model)
+    target_predictions = model.predict(testing_dataset.loc[:, model.feature_names_in_])
+    submission = testing_dataset[["id"]].copy()
     submission = submission.assign(target=target_predictions)
     return submission
 
@@ -92,7 +106,7 @@ def get_error_model(splited_data: dict, model: Pipeline) -> float:
     return error
 
 
-def write_mvb_submission(RegressionModel):
+def write_mvb_submission(RegressionModel, submission_path):
     """Define el modelo que quieres usar:
     *. LogisticModel
     *. LinearModel
@@ -102,14 +116,13 @@ def write_mvb_submission(RegressionModel):
     splited_data = preprocces_training_data()
     model = set_model(splited_data, RegressionModel)
     get_error_model(splited_data, model)
-    submission_path = "pollos_petrel/mvb_submission.csv"
     submission = make_predictions(model)
     submission.to_csv(submission_path)
 
 
-def write_linear_submission():
-    write_mvb_submission(LinearModel)
+def write_both_submissions():
+    linear = LinearModel()
+    linear.write_submission()
 
-
-def write_logistic_submission():
-    write_mvb_submission(LogisticModel)
+    logistic = LogisticModel()
+    logistic.write_submission()
