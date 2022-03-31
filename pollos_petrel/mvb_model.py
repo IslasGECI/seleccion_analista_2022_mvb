@@ -73,7 +73,7 @@ class LogisticModel(Pipeline):
 
     def write_submission(self):
         file_path = "pollos_petrel/mvb_logistic_submission.csv"
-        write_mvb_submission(LinearModel, file_path)
+        write_mvb_submission(LogisticModel, file_path)
 
 
 def set_model(splited_data: dict, RegressionModel) -> Pipeline:
