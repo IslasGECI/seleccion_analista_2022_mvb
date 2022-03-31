@@ -46,15 +46,13 @@ testdata = [
 
 
 @pytest.mark.parametrize("expected_model,  Model", testdata, ids=["linear", "logistic"])
-def test_set_linear_regression(expected_model, Model):
-    splited_data = preprocces_training_data()
-    obtained_model = set_model(splited_data, Model).steps[1][0]
+def test_set_model(expected_model, Model):
+    obtained_model = set_model(Model).steps[1][0]
     assert obtained_model == expected_model
 
 
 def test_make_predictions():
-    splited_data = preprocces_training_data()
-    model = set_model(splited_data, LinearModel)
+    model = set_model(LinearModel)
     predictions = make_predictions(model)
     is_target_null = predictions["target"].isnull().any()
     assert not (is_target_null)
@@ -65,7 +63,7 @@ def test_make_predictions():
 
 def test_get_error_model():
     splited_data = preprocces_training_data()
-    model = set_model(splited_data, LinearModel)
+    model = set_model(LinearModel)
     obtained_error = get_error_model(splited_data, model)
     assert obtained_error > 0
 
