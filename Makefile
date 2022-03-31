@@ -55,12 +55,6 @@ check:
 	mypy ${module}
 	mypy src
 	mypy tests
-	R -e "library(styler)" \
-      -e "resumen <- style_dir('R')" \
-      -e "resumen <- rbind(resumen, style_dir('src'))" \
-      -e "resumen <- rbind(resumen, style_dir('tests'))" \
-      -e "any(resumen[[2]])" \
-      | grep FALSE
 
 clean:
 	rm --force --recursive ${module}.egg-info
@@ -75,7 +69,7 @@ clean:
 	rm --force coverage.xml
 	rm --force pollos_petrel/example_*_submission.csv
 
-coverage: coverage_python coverage_r
+coverage: coverage_python
 
 coverage_python: setup_python
 	pytest --cov=${module} --cov-report=term-missing --verbose
@@ -87,16 +81,12 @@ format:
 	black --line-length 100 ${module}
 	black --line-length 100 src
 	black --line-length 100 tests
-	R -e "library(styler)" \
-      -e "style_dir('R')" \
-      -e "style_dir('src')" \
-      -e "style_dir('tests')"
 
 linter:
 	$(call lint, ${module})
 	$(call lint, tests)
 
-mutants: mutants_python mutants_r
+mutants: mutants_python
 
 mutants_python: setup_python tests_python
 	mutmut run --paths-to-mutate ${module}
@@ -105,7 +95,7 @@ mutants_python: setup_python tests_python
 mutants_r: setup_r tests_r
 	@echo "🙁🏹 No mutation testing on R 👾🎉👾"
 
-setup: setup_python setup_r
+setup: setup_python
 
 setup_python: clean
 	pip install --editable .
@@ -116,7 +106,7 @@ setup_r: clean
     R CMD check SeleccionAnalista2022_0.1.0.tar.gz && \
     R CMD INSTALL SeleccionAnalista2022_0.1.0.tar.gz
 
-tests: tests_python tests_r
+tests: tests_python
 
 tests_python:
 	pytest --verbose
