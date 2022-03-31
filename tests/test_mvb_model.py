@@ -7,8 +7,6 @@ from pollos_petrel import (
     LogisticModel,
     make_predictions,
     get_error_model,
-    write_linear_submission,
-    write_logistic_submission,
 )
 import os
 import pandas as pd
@@ -72,26 +70,27 @@ def test_get_error_model():
 
 
 test_data = [
-    (write_linear_submission, "pollos_petrel/mvb_linear_submission.csv"),  # type: ignore
-    (write_logistic_submission, "pollos_petrel/mvb_logistic_submission.csv"),  # type: ignore
+    (LinearModel, "pollos_petrel/mvb_linear_submission.csv"),  # type: ignore
+    (LogisticModel, "pollos_petrel/mvb_logistic_submission.csv"),  # type: ignore
 ]
 
 
 @pytest.fixture
-def setup_test_write_submission(submission_path, write_some_submission):
+def setup_test_write_submission(submission_path, regression):
     if os.path.exists(submission_path):
         os.remove(submission_path)
-    write_some_submission()
+    model = regression()
+    model.write_submission()
     submission = pd.read_csv(submission_path)
     return submission
 
 
 @pytest.mark.parametrize(
-    "write_some_submission,submission_path",
+    "regression,submission_path",
     test_data,
     ids=["Escribiendo LinearModel", "Escribiendo LogisticModel"],
 )
-def test_write_something(setup_test_write_submission):
+def test_write_submission(setup_test_write_submission):
     submission = setup_test_write_submission
     submission_rows = submission.shape[0]
     assert submission_rows > 1
