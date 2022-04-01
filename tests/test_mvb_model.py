@@ -38,20 +38,24 @@ def test_preprocces_training_data():
         assert key in keys
 
 
-testdata = [
+test_data = [
     ("linearregression", LinearModel),
     ("logisticregression", LogisticModel),
 ]
 
 
-@pytest.mark.parametrize("expected_model,  Model", testdata, ids=["linear", "logistic"])
+@pytest.mark.parametrize("expected_model,  Model", test_data, ids=["linear", "logistic"])
 def test_set_model(expected_model, Model):
     obtained_model = Model().set_regression().steps[1][0]
     assert obtained_model == expected_model
 
 
-def test_make_predictions():
-    model = LinearModel()
+test_data = [(LinearModel),(LogisticModel)]
+
+
+@pytest.mark.parametrize("regression",test_data,ids=["Predicciones de LinearModel","Predicciones de LogisticModel"])
+def test_make_predictions(regression):
+    model = regression()
     predictions = make_predictions(model.model)
     is_target_null = predictions["target"].isnull().any()
     assert not (is_target_null)
