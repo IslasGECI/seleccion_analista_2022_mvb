@@ -46,7 +46,7 @@ def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
 class LinearModel(Pipeline):
 	def __init__(self):
 		self.splited_data = preprocces_training_data()
-		self.regression=LinearModel
+
 
 	def set_regression(self) -> Pipeline:
 		model = make_pipeline(StandardScaler(), LinearRegression())
@@ -58,27 +58,29 @@ class LinearModel(Pipeline):
 
 	def write_submission(self):
 		submission_path = "pollos_petrel/mvb_linear_submission.csv"
-		model = self.regression().set_regression()
+		model = self.set_regression()
 		get_error_model(self.splited_data, model)
 		submission = make_predictions(model)
 		submission.to_csv(submission_path)
 
 
 class LogisticModel(Pipeline):
-    def __init__(self):
-        self.splited_data = preprocces_training_data()
+	def __init__(self):
+		self.splited_data = preprocces_training_data()
 
-    def set_regression(self) -> Pipeline:
-        model = make_pipeline(StandardScaler(), LogisticRegression())
-        model.fit(
-            self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
-        )
-        return model
+	def set_regression(self) -> Pipeline:
+		model = make_pipeline(StandardScaler(), LogisticRegression())
+		model.fit(
+			self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
+		)
+		return model
 
-    def write_submission(self):
-        file_path = "pollos_petrel/mvb_logistic_submission.csv"
-        write_mvb_submission(LogisticModel, file_path)
-
+	def write_submission(self):
+		submission_path = "pollos_petrel/mvb_logistic_submission.csv"
+		model = self.set_regression()
+		get_error_model(self.splited_data, model)
+		submission = make_predictions(model)
+		submission.to_csv(submission_path)
 
 def set_model(RegressionModel) -> Pipeline:
     """Define y entrena el modelo escogido. Las opciones son:
@@ -108,16 +110,6 @@ def get_error_model(splited_data: dict, model: Pipeline) -> float:
     error = mean_absolute_error(target_predicted, splited_data["test_target"])
     print(f"En promedio el error de nuestro modelo es {error:.2f} dias ")
     return error
-
-
-def write_mvb_submission(RegressionModel, submission_path):
-    """Define el modelo que quieres usar:
-    *. LogisticModel
-    *. LinearModel
-
-    LinearModel es el mejor
-    """
-
 
 
 def write_both_submissions():
