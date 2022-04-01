@@ -2,7 +2,6 @@ from pollos_petrel import (
     split_data,
     split_target,
     preprocces_training_data,
-    set_model,
     LinearModel,
     LogisticModel,
     make_predictions,
@@ -39,21 +38,25 @@ def test_preprocces_training_data():
         assert key in keys
 
 
-testdata = [
+test_data = [
     ("linearregression", LinearModel),
     ("logisticregression", LogisticModel),
 ]
 
 
-@pytest.mark.parametrize("expected_model,  Model", testdata, ids=["linear", "logistic"])
+@pytest.mark.parametrize("expected_model,  Model", test_data, ids=["linear", "logistic"])
 def test_set_model(expected_model, Model):
-    obtained_model = set_model(Model).steps[1][0]
+    obtained_model = Model().set_regression().steps[1][0]
     assert obtained_model == expected_model
 
 
-def test_make_predictions():
-    model = set_model(LinearModel)
-    predictions = make_predictions(model)
+test_data = [(LinearModel),(LogisticModel)]
+
+
+@pytest.mark.parametrize("regression",test_data,ids=["Predicciones de LinearModel","Predicciones de LogisticModel"])
+def test_make_predictions(regression):
+    model = regression()
+    predictions = make_predictions(model.model)
     is_target_null = predictions["target"].isnull().any()
     assert not (is_target_null)
     obtained_colums = predictions.shape[1]
@@ -63,8 +66,8 @@ def test_make_predictions():
 
 def test_get_error_model():
     splited_data = preprocces_training_data()
-    model = set_model(LinearModel)
-    obtained_error = get_error_model(splited_data, model)
+    model = LinearModel()
+    obtained_error = get_error_model(splited_data, model.model)
     assert obtained_error > 0
 
 
