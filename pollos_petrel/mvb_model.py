@@ -46,10 +46,19 @@ def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
 class LinearModel(Pipeline):
 	def __init__(self):
 		self.splited_data = preprocces_training_data()
-
+		model = self.set_regression()
 
 	def set_regression(self) -> Pipeline:
+		"""Define y entrena el modelo escogido. Las opciones son:
+	*- LinearModel
+	*- LogisticModel
+
+	En el modelo linear se usan las columnas 'Longitud_ala' y
+			'Longitu_pluma_exterior_de_la_cola' por ser las variables con
+			una correlación más alta
+		"""
 		model = make_pipeline(StandardScaler(), LinearRegression())
+		print(f"Descripción del modelo: {model.steps}")
 		model.fit(
 			self.splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
 			self.splited_data["train_target"],
@@ -70,6 +79,7 @@ class LogisticModel(Pipeline):
 
 	def set_regression(self) -> Pipeline:
 		model = make_pipeline(StandardScaler(), LogisticRegression())
+		print(f"Descripción del modelo: {model.steps}")
 		model.fit(
 			self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
 		)
@@ -81,20 +91,6 @@ class LogisticModel(Pipeline):
 		get_error_model(self.splited_data, model)
 		submission = make_predictions(model)
 		submission.to_csv(submission_path)
-
-def set_model(RegressionModel) -> Pipeline:
-    """Define y entrena el modelo escogido. Las opciones son:
-    *- LinearModel
-    *- LogisticModel
-
-    En el modelo linear se usan las columnas 'Longitud_ala' y
-            'Longitu_pluma_exterior_de_la_cola' por ser las variables con
-            una correlación más alta
-    """
-    model = RegressionModel().set_regression()
-
-    print(f"Modelo seleccionado: {model.steps}")
-    return model
 
 
 def make_predictions(model: Pipeline) -> pd.DataFrame:
