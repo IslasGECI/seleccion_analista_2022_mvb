@@ -44,43 +44,43 @@ def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
 
 
 class LinearModel(Pipeline):
-	def __init__(self):
-		self.splited_data = preprocces_training_data()
+    def __init__(self):
+        self.splited_data = preprocces_training_data()
 
+    def set_regression(self) -> Pipeline:
+        model = make_pipeline(StandardScaler(), LinearRegression())
+        model.fit(
+            self.splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
+            self.splited_data["train_target"],
+        )
+        return model
 
-	def set_regression(self) -> Pipeline:
-		model = make_pipeline(StandardScaler(), LinearRegression())
-		model.fit(
-			self.splited_data["train_data"][["Longitud_ala", "Longitud_pluma_exterior_de_la_cola"]],
-			self.splited_data["train_target"],
-		)
-		return model
-
-	def write_submission(self):
-		submission_path = "pollos_petrel/mvb_linear_submission.csv"
-		model = self.set_regression()
-		get_error_model(self.splited_data, model)
-		submission = make_predictions(model)
-		submission.to_csv(submission_path)
+    def write_submission(self):
+        submission_path = "pollos_petrel/mvb_linear_submission.csv"
+        model = self.set_regression()
+        get_error_model(self.splited_data, model)
+        submission = make_predictions(model)
+        submission.to_csv(submission_path)
 
 
 class LogisticModel(Pipeline):
-	def __init__(self):
-		self.splited_data = preprocces_training_data()
+    def __init__(self):
+        self.splited_data = preprocces_training_data()
 
-	def set_regression(self) -> Pipeline:
-		model = make_pipeline(StandardScaler(), LogisticRegression())
-		model.fit(
-			self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
-		)
-		return model
+    def set_regression(self) -> Pipeline:
+        model = make_pipeline(StandardScaler(), LogisticRegression())
+        model.fit(
+            self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
+        )
+        return model
 
-	def write_submission(self):
-		submission_path = "pollos_petrel/mvb_logistic_submission.csv"
-		model = self.set_regression()
-		get_error_model(self.splited_data, model)
-		submission = make_predictions(model)
-		submission.to_csv(submission_path)
+    def write_submission(self):
+        submission_path = "pollos_petrel/mvb_logistic_submission.csv"
+        model = self.set_regression()
+        get_error_model(self.splited_data, model)
+        submission = make_predictions(model)
+        submission.to_csv(submission_path)
+
 
 def set_model(RegressionModel) -> Pipeline:
     """Define y entrena el modelo escogido. Las opciones son:
