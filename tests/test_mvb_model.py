@@ -1,7 +1,7 @@
 from pollos_petrel import (
     split_data,
     split_target,
-    preprocces_training_data,
+    preprocess_training_data,
     LinearModel,
     LogisticModel,
     write_both_submissions,
@@ -29,8 +29,8 @@ def test_split_something(setup_test_split):
     assert expected_columns == obtained_colums
 
 
-def test_preprocces_training_data():
-    splited_data = preprocces_training_data()
+def test_preprocess_training_data():
+    splited_data = preprocess_training_data()
     keys = ["train_data", "train_target", "test_data", "test_target"]
     for key in splited_data.keys():
         assert key in keys
@@ -67,9 +67,9 @@ def test_make_predictions(regression):
 @pytest.mark.parametrize(
     "regression", test_data, ids=["Predicciones de LinearModel", "Predicciones de LogisticModel"]
 )
-def test_preprocces_testing_data(regression):
+def test_preprocess_testing_data(regression):
     model = regression()
-    data = model.preprocces_testing_data()
+    data = model.preprocess_testing_data()
     n_obtained_columns = len(data.columns)
     n_expected_columns = len(model.model.feature_names_in_) + 1
     assert n_obtained_columns == n_expected_columns

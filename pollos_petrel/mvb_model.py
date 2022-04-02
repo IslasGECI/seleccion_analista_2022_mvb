@@ -18,7 +18,7 @@ def split_target(dataset: pd.DataFrame) -> pd.DataFrame:
     return target
 
 
-def preprocces_training_data() -> dict:
+def preprocess_training_data() -> dict:
     training_dataset = read_training_dataset()
     training_dataset = training_dataset.dropna()
     numeric = split_data(training_dataset)
@@ -43,13 +43,13 @@ class General_Model(Pipeline):
     """
 
     def __init__(self):
-        self.splited_data = preprocces_training_data()
+        self.splited_data = preprocess_training_data()
         self.model = self.set_regression()
 
     def set_regression(self) -> Pipeline:
         return self.regression_setter
 
-    def preprocces_testing_data(self) -> pd.DataFrame:
+    def preprocess_testing_data(self) -> pd.DataFrame:
         testing_dataset = read_testing_dataset()
         no_nan_dataset = testing_dataset[["id"]].copy()
         imputer = SimpleImputer()
@@ -59,7 +59,7 @@ class General_Model(Pipeline):
         return no_nan_dataset
 
     def make_predictions(self) -> pd.DataFrame:
-        testing_dataset = self.preprocces_testing_data()
+        testing_dataset = self.preprocess_testing_data()
         target_predictions = self.model.predict(
             testing_dataset.loc[:, self.model.feature_names_in_]
         )
