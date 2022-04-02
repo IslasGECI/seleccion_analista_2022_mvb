@@ -39,8 +39,8 @@ def test_preprocces_training_data():
 
 
 test_data = [
-    ("linearregression", LinearModel),
-    ("logisticregression", LogisticModel),
+    ("linearregression", LinearModel),  # type: ignore
+    ("logisticregression", LogisticModel),  # type: ignore
 ]
 
 
@@ -50,10 +50,12 @@ def test_set_model(expected_model, Model):
     assert obtained_model == expected_model
 
 
-test_data = [(LinearModel),(LogisticModel)]
+test_data = [(LinearModel), (LogisticModel)]  # type: ignore
 
 
-@pytest.mark.parametrize("regression",test_data,ids=["Predicciones de LinearModel","Predicciones de LogisticModel"])
+@pytest.mark.parametrize(
+    "regression", test_data, ids=["Predicciones de LinearModel", "Predicciones de LogisticModel"]
+)
 def test_make_predictions(regression):
     model = regression()
     predictions = make_predictions(model.model)
