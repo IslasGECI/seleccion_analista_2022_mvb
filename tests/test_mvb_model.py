@@ -4,7 +4,6 @@ from pollos_petrel import (
     preprocces_training_data,
     LinearModel,
     LogisticModel,
-    get_error_model,
     write_both_submissions,
 )
 import os
@@ -65,10 +64,20 @@ def test_make_predictions(regression):
     assert obtained_colums == expected_columns
 
 
+@pytest.mark.parametrize(
+    "regression", test_data, ids=["Predicciones de LinearModel", "Predicciones de LogisticModel"]
+)
+def test_preprocces_testing_data(regression):
+    model = regression()
+    data = model.preprocces_testing_data()
+    n_obtained_columns = len(data.columns)
+    n_expected_columns = len(model.model.feature_names_in_) + 1
+    assert n_obtained_columns == n_expected_columns
+
+
 def test_get_error_model():
-    splited_data = preprocces_training_data()
     model = LinearModel()
-    obtained_error = get_error_model(splited_data, model.model)
+    obtained_error = model.get_error_model()
     assert obtained_error > 0
 
 

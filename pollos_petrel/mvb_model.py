@@ -67,8 +67,16 @@ class General_Model(Pipeline):
         submission = submission.assign(target=target_predictions)
         return submission
 
+    def get_error_model(self) -> float:
+        target_predicted = self.model.predict(
+            self.splited_data["test_data"][self.model.feature_names_in_]
+        )
+        error = mean_absolute_error(target_predicted, self.splited_data["test_target"])
+        print(f"En promedio el error de nuestro modelo es {error:.2f} dias ")
+        return error
+
     def write_submission(self):
-        get_error_model(self.splited_data, self.model)
+        self.get_error_model()
         submission = self.make_predictions()
         submission.to_csv(self.submission_path)
 
@@ -100,13 +108,6 @@ class LogisticModel(General_Model):
             self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
         )
         return model
-
-
-def get_error_model(splited_data: dict, model: Pipeline) -> float:
-    target_predicted = model.predict(splited_data["test_data"][model.feature_names_in_])
-    error = mean_absolute_error(target_predicted, splited_data["test_target"])
-    print(f"En promedio el error de nuestro modelo es {error:.2f} dias ")
-    return error
 
 
 def write_both_submissions():
