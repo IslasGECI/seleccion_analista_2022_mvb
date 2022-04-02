@@ -33,16 +33,6 @@ def preprocces_training_data() -> dict:
     return splited_data
 
 
-def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
-    testing_dataset = read_testing_dataset()
-    no_nan_dataset = testing_dataset[["id"]].copy()
-    imputer = SimpleImputer()
-    no_nan_dataset.loc[:, model.feature_names_in_] = imputer.fit_transform(
-        testing_dataset.loc[:, model.feature_names_in_]
-    )
-    return no_nan_dataset
-
-
 class General_Model(Pipeline):
     """Define y entrena el modelo escogido. Las opciones son:
     *- LinearModel
@@ -59,8 +49,17 @@ class General_Model(Pipeline):
     def set_regression(self) -> Pipeline:
         return self.regression_setter
 
+    def preprocces_testing_data(self) -> pd.DataFrame:
+        testing_dataset = read_testing_dataset()
+        no_nan_dataset = testing_dataset[["id"]].copy()
+        imputer = SimpleImputer()
+        no_nan_dataset.loc[:, self.model.feature_names_in_] = imputer.fit_transform(
+            testing_dataset.loc[:, self.model.feature_names_in_]
+        )
+        return no_nan_dataset
+
     def make_predictions(self) -> pd.DataFrame:
-        testing_dataset = preprocces_testing_data(self.model)
+        testing_dataset = self.preprocces_testing_data()
         target_predictions = self.model.predict(
             testing_dataset.loc[:, self.model.feature_names_in_]
         )
