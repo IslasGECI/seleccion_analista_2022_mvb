@@ -4,7 +4,6 @@ from pollos_petrel import (
     preprocces_training_data,
     LinearModel,
     LogisticModel,
-    make_predictions,
     get_error_model,
     write_both_submissions,
 )
@@ -58,7 +57,7 @@ test_data = [(LinearModel), (LogisticModel)]  # type: ignore
 )
 def test_make_predictions(regression):
     model = regression()
-    predictions = make_predictions(model.model)
+    predictions = model.make_predictions()
     is_target_null = predictions["target"].isnull().any()
     assert not (is_target_null)
     obtained_colums = predictions.shape[1]
