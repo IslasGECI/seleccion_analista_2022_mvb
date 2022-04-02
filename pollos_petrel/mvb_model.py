@@ -46,9 +46,6 @@ class General_Model(Pipeline):
         self.splited_data = _preprocess_training_data()
         self.model = self.set_regression()
 
-    def set_regression(self) -> Pipeline:
-        return self.regression_setter
-
     def preprocess_testing_data(self) -> pd.DataFrame:
         testing_dataset = read_testing_dataset()
         no_nan_dataset = testing_dataset[["id"]].copy()
