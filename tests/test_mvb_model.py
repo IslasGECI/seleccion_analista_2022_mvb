@@ -1,7 +1,4 @@
 from pollos_petrel import (
-    split_data,
-    split_target,
-    preprocess_training_data,
     LinearModel,
     LogisticModel,
     write_both_submissions,
@@ -9,31 +6,6 @@ from pollos_petrel import (
 import os
 import pandas as pd
 import pytest
-
-
-@pytest.fixture
-def setup_test_split(split_something):
-    data = {"id": [1, 2], "numeros": [5, 6], "target": [3, 4]}
-    dataset = pd.DataFrame(data=data)
-    splited = split_something(dataset)
-    return splited
-
-
-test_data = [(split_data), (split_target)]
-
-
-@pytest.mark.parametrize("split_something", test_data, ids=["spliting_data", "spliting_target"])
-def test_split_something(setup_test_split):
-    expected_columns = 1
-    obtained_colums = setup_test_split.shape[1]
-    assert expected_columns == obtained_colums
-
-
-def test_preprocess_training_data():
-    splited_data = preprocess_training_data()
-    keys = ["train_data", "train_target", "test_data", "test_target"]
-    for key in splited_data.keys():
-        assert key in keys
 
 
 test_data = [

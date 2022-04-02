@@ -8,21 +8,21 @@ from pollos_petrel import read_training_dataset, read_testing_dataset
 import pandas as pd
 
 
-def split_data(dataset: pd.DataFrame) -> pd.DataFrame:
+def _split_data(dataset: pd.DataFrame) -> pd.DataFrame:
     numeric = dataset.drop(columns=["target", "id"])
     return numeric
 
 
-def split_target(dataset: pd.DataFrame) -> pd.DataFrame:
+def _split_target(dataset: pd.DataFrame) -> pd.DataFrame:
     target = dataset[["target"]]
     return target
 
 
-def preprocess_training_data() -> dict:
+def _preprocess_training_data() -> dict:
     training_dataset = read_training_dataset()
     training_dataset = training_dataset.dropna()
-    numeric = split_data(training_dataset)
-    target = split_target(training_dataset)
+    numeric = _split_data(training_dataset)
+    target = _split_target(training_dataset)
     train_data, test_data, train_target, test_target = train_test_split(numeric, target)
     splited_data = {
         "train_data": train_data,
@@ -43,7 +43,7 @@ class General_Model(Pipeline):
     """
 
     def __init__(self):
-        self.splited_data = preprocess_training_data()
+        self.splited_data = _preprocess_training_data()
         self.model = self.set_regression()
 
     def set_regression(self) -> Pipeline:
