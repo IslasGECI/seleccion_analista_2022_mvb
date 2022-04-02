@@ -43,21 +43,43 @@ def preprocces_testing_data(model: Pipeline) -> pd.DataFrame:
     return no_nan_dataset
 
 
-class LinearModel(Pipeline):
+class General_Model(Pipeline):
+    """Define y entrena el modelo escogido. Las opciones son:
+    *- LinearModel
+    *- LogisticModel
+
+    En el modelo linear se usan las columnas 'Longitud_ala' y
+    'Longitud_pluma_exterior_de_la_cola' por ser las variables con una correlación más alta
+    """
+
     def __init__(self):
         self.splited_data = preprocces_training_data()
         self.model = self.set_regression()
+
+    def set_regression(self) -> Pipeline:
+        return self.regression_setter
+
+    def make_predictions(self) -> pd.DataFrame:
+        testing_dataset = preprocces_testing_data(self.model)
+        target_predictions = self.model.predict(
+            testing_dataset.loc[:, self.model.feature_names_in_]
+        )
+        submission = testing_dataset[["id"]].copy()
+        submission = submission.assign(target=target_predictions)
+        return submission
+
+    def write_submission(self):
+        get_error_model(self.splited_data, self.model)
+        submission = self.make_predictions()
+        submission.to_csv(self.submission_path)
+
+
+class LinearModel(General_Model):
+    def __init__(self):
+        General_Model.__init__(self)
         self.submission_path = "pollos_petrel/mvb_linear_submission.csv"
 
     def set_regression(self) -> Pipeline:
-        """Define y entrena el modelo escogido. Las opciones son:
-        *- LinearModel
-        *- LogisticModel
-
-        En el modelo linear se usan las columnas 'Longitud_ala' y
-                        'Longitu_pluma_exterior_de_la_cola' por ser las variables con
-                        una correlación más alta
-        """
         model = make_pipeline(StandardScaler(), LinearRegression())
         print(f"Descripción del modelo: {model.steps}")
         model.fit(
@@ -66,16 +88,10 @@ class LinearModel(Pipeline):
         )
         return model
 
-    def write_submission(self):
-        get_error_model(self.splited_data, self.model)
-        submission = make_predictions(self.model)
-        submission.to_csv(self.submission_path)
 
-
-class LogisticModel(Pipeline):
+class LogisticModel(General_Model):
     def __init__(self):
-        self.splited_data = preprocces_training_data()
-        self.model = self.set_regression()
+        General_Model.__init__(self)
         self.submission_path = "pollos_petrel/mvb_logistic_submission.csv"
 
     def set_regression(self) -> Pipeline:
@@ -85,19 +101,6 @@ class LogisticModel(Pipeline):
             self.splited_data["train_data"], self.splited_data["train_target"]["target"].values
         )
         return model
-
-    def write_submission(self):
-        get_error_model(self.splited_data, self.model)
-        submission = make_predictions(self.model)
-        submission.to_csv(self.submission_path)
-
-
-def make_predictions(model: Pipeline) -> pd.DataFrame:
-    testing_dataset = preprocces_testing_data(model)
-    target_predictions = model.predict(testing_dataset.loc[:, model.feature_names_in_])
-    submission = testing_dataset[["id"]].copy()
-    submission = submission.assign(target=target_predictions)
-    return submission
 
 
 def get_error_model(splited_data: dict, model: Pipeline) -> float:
