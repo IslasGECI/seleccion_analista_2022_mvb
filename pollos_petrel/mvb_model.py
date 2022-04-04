@@ -47,7 +47,6 @@ class General_Model(Pipeline):
         self.model = self.set_regression()
         self.testing_dataset = self._preprocess_testing_data()
 
-
     def _preprocess_testing_data(self) -> pd.DataFrame:
         testing_dataset = read_testing_dataset()
         no_nan_dataset = testing_dataset[["id"]].copy()
