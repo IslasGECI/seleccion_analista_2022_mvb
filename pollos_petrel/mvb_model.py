@@ -45,8 +45,10 @@ class General_Model(Pipeline):
     def __init__(self):
         self.splited_data = _preprocess_training_data()
         self.model = self.set_regression()
+        self.testing_dataset = self._preprocess_testing_data()
 
-    def preprocess_testing_data(self) -> pd.DataFrame:
+
+    def _preprocess_testing_data(self) -> pd.DataFrame:
         testing_dataset = read_testing_dataset()
         no_nan_dataset = testing_dataset[["id"]].copy()
         imputer = SimpleImputer()
@@ -56,11 +58,10 @@ class General_Model(Pipeline):
         return no_nan_dataset
 
     def make_predictions(self) -> pd.DataFrame:
-        testing_dataset = self.preprocess_testing_data()
         target_predictions = self.model.predict(
-            testing_dataset.loc[:, self.model.feature_names_in_]
+            self.testing_dataset.loc[:, self.model.feature_names_in_]
         )
-        submission = testing_dataset[["id"]].copy()
+        submission = self.testing_dataset[["id"]].copy()
         submission = submission.assign(target=target_predictions)
         return submission
 

@@ -41,7 +41,7 @@ def test_make_predictions(regression):
 )
 def test_preprocess_testing_data(regression):
     model = regression()
-    data = model.preprocess_testing_data()
+    data = model.testing_dataset
     n_obtained_columns = len(data.columns)
     n_expected_columns = len(model.model.feature_names_in_) + 1
     assert n_obtained_columns == n_expected_columns
