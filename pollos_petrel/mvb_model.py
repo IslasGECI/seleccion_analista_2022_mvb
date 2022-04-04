@@ -120,8 +120,8 @@ class LogisticModel(General_Model):
 
 
 def write_both_submissions():
-    linear = FactoryModelPetrel["linear"]
+    linear = FactoryModelPetrel("linear")
     linear.write_submission()
 
-    logistic = FactoryModelPetrel["logistic"]
+    logistic = FactoryModelPetrel("logistic")
     logistic.write_submission()
