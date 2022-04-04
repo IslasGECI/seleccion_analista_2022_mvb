@@ -120,9 +120,8 @@ class LogisticModel(General_Model):
 
 
 def write_both_submissions():
-    REGRESSION_MODELS_SELECTOR = {"linear": LinearModel(), "logistic": LogisticModel()}
-    linear = REGRESSION_MODELS_SELECTOR["linear"]
+    linear = FactoryModelPetrel["linear"]
     linear.write_submission()
 
-    logistic = REGRESSION_MODELS_SELECTOR["logistic"]
+    logistic = FactoryModelPetrel["logistic"]
     logistic.write_submission()
