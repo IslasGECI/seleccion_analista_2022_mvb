@@ -47,7 +47,7 @@ class General_Model(Pipeline):
         self.model = self.set_regression()
         self._preprocess_testing_data()
 
-    def _preprocess_testing_data(self) -> pd.DataFrame:
+    def _preprocess_testing_data(self):
         raw_testing_dataset = read_testing_dataset()
         self.testing_dataset = raw_testing_dataset[["id"]].copy()
         imputer = SimpleImputer()
@@ -107,8 +107,9 @@ class LogisticModel(General_Model):
 
 
 def write_both_submissions():
-    linear = LinearModel()
+    REGRESSION_MODELS_SELECTOR = {"linear": LinearModel(), "logistic": LogisticModel()}
+    linear = REGRESSION_MODELS_SELECTOR["linear"]
     linear.write_submission()
 
-    logistic = LogisticModel()
+    logistic = REGRESSION_MODELS_SELECTOR["logistic"]
     logistic.write_submission()
