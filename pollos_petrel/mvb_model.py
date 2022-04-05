@@ -36,13 +36,8 @@ def _preprocess_training_data() -> dict:
 class FactoryModelPetrel:
     def __new__(cls, model):
         REGRESSION_MODELS_SELECTOR = {"linear": LinearModel, "logistic": LogisticModel}
-        paths_submissions = {
-            "linear": "pollos_petrel/mvb_linear_submission.csv",
-            "logistic": "pollos_petrel/mvb_logistic_submission.csv",
-        }
         instance = super().__new__(REGRESSION_MODELS_SELECTOR[model])
         instance.__init__()
-        instance.submission_path = paths_submissions[model]
         return instance
 
 
