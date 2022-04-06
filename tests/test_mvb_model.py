@@ -36,7 +36,7 @@ def test_make_predictions(regression):
 
 
 @pytest.mark.parametrize(
-    "regression", test_data, ids=["Predicciones de LinearModel", "Predicciones de LogisticModel"]
+    "regression", test_data, ids=["with LinearModel", "with  LogisticModel"]
 )
 def test_preprocess_testing_data(regression):
     model = regression()
