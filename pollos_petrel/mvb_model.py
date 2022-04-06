@@ -34,11 +34,9 @@ def _preprocess_training_data() -> dict:
 
 
 class FactoryModelPetrel:
-    def __new__(cls, model):
+    def make_model(self, model):
         REGRESSION_MODELS_SELECTOR = {"linear": LinearModel, "logistic": LogisticModel}
-        instance = super().__new__(REGRESSION_MODELS_SELECTOR[model])
-        instance.__init__()
-        return instance
+        return REGRESSION_MODELS_SELECTOR[model]()
 
 
 class General_Model(Pipeline):
@@ -115,8 +113,9 @@ class LogisticModel(General_Model):
 
 
 def write_both_submissions():
-    linear = FactoryModelPetrel("linear")
+    model_factory = FactoryModelPetrel()
+    linear = model_factory.make_model("linear")
     linear.write_submission()
 
-    logistic = FactoryModelPetrel("logistic")
+    logistic = model_factory.make_model("logistic")
     logistic.write_submission()
