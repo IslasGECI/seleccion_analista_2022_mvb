@@ -4,7 +4,6 @@ from pollos_petrel import (
     write_both_submissions,
 )
 import os
-import pandas as pd
 import pytest
 
 
@@ -53,46 +52,15 @@ def test_get_error_model():
     assert obtained_error > 0
 
 
-test_data = [
-    (LinearModel, "pollos_petrel/mvb_linear_submission.csv"),  # type: ignore
-    (LogisticModel, "pollos_petrel/mvb_logistic_submission.csv"),  # type: ignore
-]
+def test_write_both_submissions():
+    submission_paths = [
+        "pollos_petrel/mvb_linear_submission.csv",
+        "pollos_petrel/mvb_logistic_submission.csv",
+    ]
+    for path in submission_paths:
+        if os.path.exists(path):
+            os.remove(path)
 
-
-@pytest.fixture
-def setup_test_write_submission(submission_path, regression):
-    if os.path.exists(submission_path):
-        os.remove(submission_path)
-    model = regression()
-    model.write_submission()
-    submission = pd.read_csv(submission_path)
-    return submission
-
-
-@pytest.mark.parametrize(
-    "regression,submission_path",
-    test_data,
-    ids=["Escribiendo LinearModel", "Escribiendo LogisticModel"],
-)
-def test_write_submission(setup_test_write_submission):
-    submission = setup_test_write_submission
-    submission_rows = submission.shape[0]
-    assert submission_rows > 1
-
-
-test_data = [
-    ("pollos_petrel/mvb_linear_submission.csv"),  # type: ignore
-    ("pollos_petrel/mvb_logistic_submission.csv"),  # type: ignore
-]
-
-
-@pytest.mark.parametrize(
-    "submission_path",
-    test_data,
-    ids=["Probando LinearModel", "Probando LogisticModel"],
-)
-def test_write_both_submissions(submission_path):
-    if os.path.exists(submission_path):
-        os.remove(submission_path)
     write_both_submissions()
-    assert os.path.exists(submission_path)
+    for path in submission_paths:
+        assert os.path.exists(path) and os.path.exists(path)
