@@ -22,9 +22,7 @@ def test_set_model(expected_model, Model):
 test_data = [(LinearModel), (LogisticModel)]  # type: ignore
 
 
-@pytest.mark.parametrize(
-    "regression", test_data, ids=["with LinearModel", "with LogisticModel"]
-)
+@pytest.mark.parametrize("regression", test_data, ids=["with LinearModel", "with LogisticModel"])
 def test_make_predictions(regression):
     model = regression()
     predictions = model.make_predictions()
@@ -35,9 +33,7 @@ def test_make_predictions(regression):
     assert obtained_colums == expected_columns
 
 
-@pytest.mark.parametrize(
-    "regression", test_data, ids=["for LinearModel", "for  LogisticModel"]
-)
+@pytest.mark.parametrize("regression", test_data, ids=["for LinearModel", "for  LogisticModel"])
 def test_preprocess_testing_data(regression):
     model = regression()
     data = model.testing_dataset
